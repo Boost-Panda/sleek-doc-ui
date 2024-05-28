@@ -25,16 +25,8 @@
             const input = event.target as HTMLInputElement;
             const file = input.files ? input.files[0] : null;
             if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                const pdfData = e.target?.result;
-                if (pdfData) {
-                    pdfStore.setPdfData(pdfData);
-                    // router.push('/view');
-                    
-                }
-                };
-                reader.readAsArrayBuffer(file);
+                console.log('File selected:', file);
+                pdfStore.setPdfData(file);
             }
             };
             const startChat = () => {

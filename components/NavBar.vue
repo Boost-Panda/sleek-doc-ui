@@ -7,6 +7,11 @@ const colorMode = useColorMode()
 </script>
 
 <template>
+  <!-- <h2
+    class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
+  >
+    Doc Sleek
+  </h2> -->
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="outline">
