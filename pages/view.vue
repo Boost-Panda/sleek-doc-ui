@@ -1,27 +1,24 @@
 <template>
   <div class="flex h-screen">
-
-    <div class="w-full h-full overflow-auto bg-white p-4">
-      <!-- <ChatInterface /> -->
+    <!-- Left Side: Summary -->
+    <div class="w-1/3 h-full overflow-auto p-4 border-r">
+      <Summary />
+    </div>
+    <!-- Right Side: Chat Interface -->
+    <div class="w-2/3 h-full overflow-auto p-4">
+      <Chat />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { usePdfStore } from '@/stores/pdfStore';
-// import PdfViewer from '@/components/pdfViewer.vue';
+import Summary from '@/components/Summary.vue';
+import Chat from '@/components/Chat.vue';
 
 export default defineComponent({
   components: {
-    // PdfViewer,
-  },
-  setup() {
-    const pdfStore = usePdfStore();
-    const pdfData = computed(() => pdfStore.getPdfData);
-
-    return {
-      pdfData,
-    };
+    Summary,
+    Chat,
   },
 });
 </script>

@@ -77,9 +77,10 @@
         if (newMessage.value.trim()) {
           messages.value.push({ id: Date.now(), sender: 'User', text: newMessage.value });
           // Simulate bot response for the purpose of this example
-          setTimeout(() => {
-            messages.value.push({ id: Date.now() + 1, sender: 'Bot', text: `You asked: ${newMessage.value}` });
-          }, 500);
+          console.log(newMessage.value);
+          // setTimeout(() => {
+          messages.value.push({ id: Date.now() + 1, sender: 'Bot', text: `You asked: ${newMessage.value}` });
+          // }, 500);
           newMessage.value = '';
         }
       };
@@ -87,8 +88,8 @@
       return {
         messages,
         newMessage,
-        sendMessage,
+        sendMessage
       };
-    },
+    }
   });
   </script>

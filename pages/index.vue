@@ -1,11 +1,11 @@
 <template>
-    <div class="flex items-center justify-center h-screen bg-gray-100">
-      <div class="bg-white p-8 rounded-lg shadow-lg">
+    <div class="flex items-center justify-center h-screen">
+      <div class="p-8 rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold mb-4">Upload PDF to Begin chat</h1>
         <div class="grid w-full max-w-sm items-center gap-1.5">
             <!-- <Label for="picture"></Label> -->
-            <Input id="picture" type="file" @change="onFileChange"  />
-            <Button @onClick="startChat">Start Chat</Button>
+            <Input id="picture" type="file" @change="onFileChange"/>
+            <Button @click="startChat">Start Chat</Button>
         </div>
       </div>
     </div>
@@ -30,7 +30,7 @@
                 const pdfData = e.target?.result;
                 if (pdfData) {
                     pdfStore.setPdfData(pdfData);
-                    router.push('/view');
+                    // router.push('/view');
                     
                 }
                 };
@@ -38,7 +38,13 @@
             }
             };
             const startChat = () => {
-              router.push('/view');
+              try {
+                console.log('start chat');
+                router.push('/view');
+              }
+              catch (error) {
+                console.log(error);
+              }
             };
 
             return {

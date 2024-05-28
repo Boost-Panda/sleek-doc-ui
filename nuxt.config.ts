@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@pinia/nuxt"], 
+  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@pinia/nuxt", "@nuxtjs/color-mode"], 
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -9,8 +9,11 @@ export default defineNuxtConfig({
     prefix: '',
     /**
      * Directory that the component lives in.
-     * @default "./components/ui"
+     * @default "./components/ui" 
      */
     componentDir: './components/ui'
+  },
+  colorMode: {
+    classSuffix: ''
   }
 })
