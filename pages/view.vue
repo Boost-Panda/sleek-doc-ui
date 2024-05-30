@@ -6,7 +6,7 @@
     </div>
     <!-- Right Side: Chat Interface -->
     <div class="w-2/3 h-full overflow-auto p-4">
-      <Chat />
+      <Chat :threadid="threadid" />
     </div>
   </div>
 </template>
@@ -25,11 +25,13 @@ export default defineComponent({
     const pdfStore = usePdfStore();
     const file = pdfStore.getPdfData();
     const summary = ref<string>('');
+    const threadid = ref<string>('');
 
     onMounted(async () => {
       if (file) {
         const formData = new FormData();
         formData.append('foo', file); // Ensure the key matches the server-side expectation
+        formData.append('query', 'Summarize what inside this PDF file.'); // Additional form data can be appended as needed
 
         try {
           const response = await fetch('http://localhost:8080/upload', {
@@ -52,11 +54,28 @@ export default defineComponent({
         } catch (error) {
           console.error('Error streaming summary:', error);
         }
+
+        // do it for creathing the thread too
+        try {
+          const response = await fetch('http://localhost:8080/create-thread', {
+            method: 'POST',
+            body: formData,
+          });
+
+          // const threadId = response.
+          const threadData = await response.json();
+          const tid = threadData.threadId;
+          threadid.value = tid;
+
+        } catch (error) {
+          console.error('Error streaming summary:', error);
+        }
       }
     });
 
     return {
       summary,
+      threadid
     };
   },
 });

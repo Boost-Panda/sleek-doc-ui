@@ -3,9 +3,11 @@
       <Badge variant="outline" class="absolute right-3 top-3">
         Output
       </Badge>
+      <!-- <LoaderCircle class="absolute right-4 top-4 size-4 animate-spin" />  -->
+      
       <div class="flex-1 overflow-auto">
         <div v-for="message in messages" :key="message.id" class="mb-4">
-          <p class="text-sm text-gray-600"><strong>{{ message.sender }}:</strong> {{ message.text }}</p>
+          <p class="text-sm"><strong>{{ message.sender }}:</strong> <span v-html="message.text"></span></p>
         </div>
       </div>
       <form @submit.prevent="sendMessage" class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring">
@@ -37,6 +39,7 @@
           <Button type="submit" size="sm" class="ml-auto gap-1.5">
             Send Message
             <CornerDownLeft class="size-3.5" />
+            <LoaderCircle />
           </Button>
         </div>
       </form>
@@ -44,11 +47,13 @@
   </template>
   
   <script lang="ts">
+  import MarkdownIt from 'markdown-it';
   import { Badge } from '@/components/ui/badge';
   import { Button } from '@/components/ui/button';
   import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
   import { Textarea } from '@/components/ui/textarea';
-  import { Paperclip, Mic, CornerDownLeft } from 'lucide-vue-next';
+  import { Paperclip, Mic, CornerDownLeft, LoaderCircle } from 'lucide-vue-next';
+  
   
   interface Message {
     id: number;
@@ -57,6 +62,12 @@
   }
   
   export default defineComponent({
+    props: {
+      threadid: {
+        type: String as PropType<string>,
+        required: true,
+      },
+    },
     components: {
       Badge,
       Button,
@@ -69,26 +80,55 @@
       Mic,
       CornerDownLeft,
     },
-    setup() {
+    setup(props) {
+      const md = new MarkdownIt();
       const messages = ref<Message[]>([]);
       const newMessage = ref('');
+      const isLoading = ref(false);
+      
   
-      const sendMessage = () => {
+      const sendMessage = async () => {
+        console.log("thread id: " + props.threadid);
         if (newMessage.value.trim()) {
           messages.value.push({ id: Date.now(), sender: 'User', text: newMessage.value });
-          // Simulate bot response for the purpose of this example
-          console.log(newMessage.value);
-          // setTimeout(() => {
-          messages.value.push({ id: Date.now() + 1, sender: 'Bot', text: `You asked: ${newMessage.value}` });
-          // }, 500);
+          // Prepare form data
+          isLoading.value = true;
+          const formData = new FormData();
+          formData.append('threadId', props.threadid);
+          formData.append('query', newMessage.value);
+
           newMessage.value = '';
+
+           // Send request to the API
+          const response = await fetch('http://localhost:8080/run-thread', {
+            method: 'POST',
+            body: formData
+          });
+
+          // Check if the request was successful
+          if (!response.ok) {
+            console.error('API request failed:', response);
+            return;
+          }
+          // Parse the response data
+          const data = await response.json();
+          isLoading.value = false;
+          // Format the bot's response
+          const formattedResponse = md.render(data.reply);
+          console.log(data);
+
+          // Add the bot's response to the messages
+          messages.value.push({ id: Date.now() + 1, sender: 'Sleek Doc', text: formattedResponse });
+
+         
         }
       };
   
       return {
         messages,
         newMessage,
-        sendMessage
+        sendMessage,
+        isLoading
       };
     }
   });
